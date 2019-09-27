@@ -5,9 +5,11 @@ import javafx.scene.shape.Line;
 
 public class Ray extends Line
 {
+
     public Line trace;
     double size = 3000;
     double angle;
+
     //
     public Ray(double x, double y, double angle)
     {
@@ -24,28 +26,33 @@ public class Ray extends Line
         this.trace.setOpacity(0.7);
         this.trace.setStrokeWidth(0.3);
     }
+
     //
     public double getAngle()
     {
         return this.angle;
     }
+
     //
     private Point endPoint(double x, double y, double angle, double size)
     {
-        x += (int) (size * Math.cos(angleToRadian(angle)));
-        y -= (int) (size * Math.sin(angleToRadian(angle)));
+        x += size * Math.cos(angleToRadian(angle));
+        y -= size * Math.sin(angleToRadian(angle));
         return new Point(x, y);
     }
+
     //
     private double radianToAngle(double radian)
     {
         return radian * (180 / Math.PI);
     }
+
     //
     private double angleToRadian(double angle)
     {
         return (Math.PI / 180.0) * angle;
     }
+
     //
     public Point cast(Boundary wall)
     {
@@ -76,12 +83,14 @@ public class Ray extends Line
             return null;
         }
     }
+
     //
     public void update(Point pt)
     {
         this.trace.setEndX(pt.getX());
         this.trace.setEndY(pt.getY());
     }
+
     //
     public void setLocation(double x, double y)
     {
@@ -97,6 +106,7 @@ public class Ray extends Line
         this.trace.setStartX(this.getStartX());
         this.trace.setStartY(this.getStartY());
     }
+
     //
     public Point getPos()
     {

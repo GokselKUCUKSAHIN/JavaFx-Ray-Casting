@@ -1,11 +1,14 @@
 package RayCasting;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,7 +16,13 @@ import java.util.Random;
 
 public class Main extends Application
 {
-
+    boolean autoMode = false;
+    final String title = "RayCasting JellyBeanci(TM)";
+    //
+    double pX = 6.420;
+    double pY = -3.6969;
+    double res = 0.01;
+    //
     static final int width = 900;
     static final int height = 900;
     static final int NUMBER_OF_WALLS = 10;
@@ -58,8 +67,48 @@ public class Main extends Application
         p.setWalls(walls);
         //
         root.setOnMouseDragged(e -> {
-            p.update(e.getX(), e.getY());
+            if(!autoMode)
+            {
+                p.update(e.getX(), e.getY());
+            }
         });
+        root.setOnKeyPressed(e->{
+            switch (e.getCode())
+            {
+                case F1:{
+                    stage.setTitle(title+" mode:ON");
+                    autoMode = true;
+                    break;
+                }
+                case F2:{
+                    stage.setTitle(title+" mode:OFF");
+                    autoMode = false;
+                    break;
+                }
+                default:{
+                    //stage.setTitle(e.getCode().toString());
+                    break;
+                }
+            }
+        });
+
+        Timeline autoMove = new Timeline(new KeyFrame(Duration.millis(100),e->{
+            //do some stuff
+            if(autoMode)
+            {
+                double perlinX = PerlinNoise.noise(pX,0);
+                double perlinY = PerlinNoise.noise(0,pY);
+                pX +=res;
+                pY +=res;
+                int xPos = (int) PerlinNoise.map(perlinX,-1.0,1.0,0,width);
+                int yPos = (int) PerlinNoise.map(perlinY,-1.0,1.0,0,height);
+                p.update(xPos,yPos);
+            }
+        }));
+        autoMove.setRate(3);
+        autoMove.setCycleCount(Timeline.INDEFINITE);
+        autoMove.setAutoReverse(false);
+        autoMove.play();
         for (int i = 0; i < NUMBER_OF_WALLS; i++)
         {
             root.getChildren().add(walls.get(i));
@@ -68,9 +117,10 @@ public class Main extends Application
         root.getChildren().addAll(p);
         //
         stage.setScene(new Scene(root, width - 10, height - 10));
-        stage.setTitle("RayCasting JellyBeanci(TM)");
+        stage.setTitle(title);
         stage.setResizable(false);
         stage.show();
+        root.requestFocus();
     }
     //END OF THE LINE @JellyBeanci
 }
